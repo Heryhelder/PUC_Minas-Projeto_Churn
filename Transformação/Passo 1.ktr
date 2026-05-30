@@ -540,6 +540,16 @@
       <to>Output Tabela CLIENTE_CHURN_AUDITA</to>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>Remover CPF duplicado</from>
+      <to>Remover Genero e IndCliente</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Remover Genero e IndCliente</from>
+      <to>CPFs duplicados</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
   <step>
     <name>Cria data_insercao</name>
@@ -1112,6 +1122,78 @@
     </GUI>
   </step>
   <step>
+    <name>Output Tabela CLIENTE_CHURN_AUDITA</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>PROJETO_CHURN_AUDITORIA</connection>
+    <schema>dbo</schema>
+    <table>CLIENTE_CHURN_AUDITA</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+      <field>
+        <column_name>ID_CLI</column_name>
+        <stream_name>ID</stream_name>
+      </field>
+      <field>
+        <column_name>CPF_CLI</column_name>
+        <stream_name>cpf</stream_name>
+      </field>
+      <field>
+        <column_name>GENERO</column_name>
+        <stream_name>idgenero</stream_name>
+      </field>
+      <field>
+        <column_name>IND_CLIENTE</column_name>
+        <stream_name>indcliente</stream_name>
+      </field>
+      <field>
+        <column_name>NOME_COMPLETO_CLI</column_name>
+        <stream_name>nome_completo</stream_name>
+      </field>
+      <field>
+        <column_name>ANO_MES</column_name>
+        <stream_name>mes_ano</stream_name>
+      </field>
+      <field>
+        <column_name>DATA_INSERCAO</column_name>
+        <stream_name>data_insercao</stream_name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1832</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Remove colunas</name>
     <type>SelectValues</type>
     <description/>
@@ -1155,15 +1237,15 @@
     <name>Remover CPF duplicado</name>
     <type>UniqueRowsByHashSet</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <store_values>N</store_values>
-    <reject_duplicate_row>N</reject_duplicate_row>
+    <store_values>Y</store_values>
+    <reject_duplicate_row>Y</reject_duplicate_row>
     <error_description/>
     <fields>
       <field>
@@ -1284,8 +1366,8 @@
     </GUI>
   </step>
   <step>
-    <name>Output Tabela CLIENTE_CHURN_AUDITA</name>
-    <type>TableOutput</type>
+    <name>Remover Genero e IndCliente</name>
+    <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1294,51 +1376,151 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>PROJETO_CHURN_AUDITORIA</connection>
-    <schema>dbo</schema>
-    <table>CLIENTE_CHURN_AUDITA</table>
-    <commit>1000</commit>
-    <truncate>Y</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
+    <fields>
+      <select_unspecified>N</select_unspecified>
+      <remove>
+        <name>idgenero</name>
+      </remove>
+      <remove>
+        <name>indcliente</name>
+      </remove>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>272</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>CPFs duplicados</name>
+    <type>TypeExitExcelWriterStep</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <header>Y</header>
+    <footer>N</footer>
+    <makeSheetActive>Y</makeSheetActive>
+    <rowWritingMethod>overwrite</rowWritingMethod>
+    <startingCell>A1</startingCell>
+    <appendOmitHeader>N</appendOmitHeader>
+    <appendOffset>0</appendOffset>
+    <appendEmpty>0</appendEmpty>
+    <rowWritingMethod>overwrite</rowWritingMethod>
+    <forceFormulaRecalculation>N</forceFormulaRecalculation>
+    <leaveExistingStylesUnchanged>N</leaveExistingStylesUnchanged>
+    <appendLines>N</appendLines>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <file>
+      <name>C:\Users\Carlo\Documents\Projetos\PUC Minas - Projeto Churn\Destino\CPFS_DUPLICADOS.xlsx</name>
+      <extention>xls</extention>
+      <do_not_open_newfile_init>N</do_not_open_newfile_init>
+      <split>N</split>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <sheetname>Sheet1</sheetname>
+      <autosizecolums>N</autosizecolums>
+      <stream_data>N</stream_data>
+      <protect_sheet>N</protect_sheet>
+      <password>Encrypted </password>
+      <protected_by/>
+      <splitevery>0</splitevery>
+      <if_file_exists>new</if_file_exists>
+      <if_sheet_exists>new</if_sheet_exists>
+    </file>
+    <template>
+      <enabled>N</enabled>
+      <sheet_enabled>N</sheet_enabled>
+      <filename>template.xls</filename>
+      <sheetname/>
+      <hidden>N</hidden>
+    </template>
     <fields>
       <field>
-        <column_name>ID_CLI</column_name>
-        <stream_name>ID</stream_name>
+        <name>ID</name>
+        <type>Integer</type>
+        <format/>
+        <title>ID</title>
+        <titleStyleCell/>
+        <styleCell/>
+        <commentField/>
+        <commentAuthorField/>
+        <formula>N</formula>
+        <hyperlinkField/>
       </field>
       <field>
-        <column_name>CPF_CLI</column_name>
-        <stream_name>cpf</stream_name>
+        <name>cpf</name>
+        <type>String</type>
+        <format/>
+        <title>cpf</title>
+        <titleStyleCell/>
+        <styleCell/>
+        <commentField/>
+        <commentAuthorField/>
+        <formula>N</formula>
+        <hyperlinkField/>
       </field>
       <field>
-        <column_name>GENERO</column_name>
-        <stream_name>idgenero</stream_name>
+        <name>nome</name>
+        <type>String</type>
+        <format/>
+        <title>nome</title>
+        <titleStyleCell/>
+        <styleCell/>
+        <commentField/>
+        <commentAuthorField/>
+        <formula>N</formula>
+        <hyperlinkField/>
       </field>
       <field>
-        <column_name>IND_CLIENTE</column_name>
-        <stream_name>indcliente</stream_name>
+        <name>sobrenome</name>
+        <type>String</type>
+        <format/>
+        <title>sobrenome</title>
+        <titleStyleCell/>
+        <styleCell/>
+        <commentField/>
+        <commentAuthorField/>
+        <formula>N</formula>
+        <hyperlinkField/>
       </field>
       <field>
-        <column_name>NOME_COMPLETO_CLI</column_name>
-        <stream_name>nome_completo</stream_name>
+        <name>MES</name>
+        <type>String</type>
+        <format/>
+        <title>MES</title>
+        <titleStyleCell/>
+        <styleCell/>
+        <commentField/>
+        <commentAuthorField/>
+        <formula>N</formula>
+        <hyperlinkField/>
       </field>
       <field>
-        <column_name>ANO_MES</column_name>
-        <stream_name>mes_ano</stream_name>
-      </field>
-      <field>
-        <column_name>DATA_INSERCAO</column_name>
-        <stream_name>data_insercao</stream_name>
+        <name>ANO</name>
+        <type>Integer</type>
+        <format/>
+        <title>ANO</title>
+        <titleStyleCell/>
+        <styleCell/>
+        <commentField/>
+        <commentAuthorField/>
+        <formula>N</formula>
+        <hyperlinkField/>
       </field>
     </fields>
     <attributes/>
@@ -1350,12 +1532,24 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1832</xloc>
-      <yloc>96</yloc>
+      <xloc>632</xloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step_error_handling>
+    <error>
+      <source_step>Remover CPF duplicado</source_step>
+      <target_step>Remover Genero e IndCliente</target_step>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename/>
+      <descriptions_valuename/>
+      <fields_valuename/>
+      <codes_valuename/>
+      <max_errors/>
+      <max_pct_errors/>
+      <min_pct_rows/>
+    </error>
   </step_error_handling>
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>
