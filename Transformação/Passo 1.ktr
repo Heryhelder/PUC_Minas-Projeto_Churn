@@ -496,46 +496,6 @@
   </connection>
   <order>
     <hop>
-      <from>Origem dos dados</from>
-      <to>Remove colunas</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Remove colunas</from>
-      <to>Remover CPF duplicado</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Remover CPF duplicado</from>
-      <to>Filtrar por clientes ativos</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Filtrar por clientes ativos</from>
-      <to>Tratamento de CPF e Gênero</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Tratamento de CPF e Gênero</from>
-      <to>Nome e sobrenome maiúsculos</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Nome e sobrenome maiúsculos</from>
-      <to>Cria nome_completo</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Cria nome_completo</from>
-      <to>Cria mes_ano</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Cria mes_ano</from>
-      <to>Cria data_insercao</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Cria data_insercao</from>
       <to>Output Tabela CLIENTE_CHURN_AUDITA</to>
       <enabled>Y</enabled>
@@ -548,6 +508,61 @@
     <hop>
       <from>Remover Genero e IndCliente</from>
       <to>CPFs duplicados</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Origem dos dados</from>
+      <to>Remover CPF duplicado</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Tratamento de CPF e Gênero</from>
+      <to>Nome, sobrenome e UF maiúsculos</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Nome, sobrenome e UF maiúsculos</from>
+      <to>Cria ano_mes</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Cria ano_mes</from>
+      <to>Filtrar por clientes ativos</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Cria nome_completo</from>
+      <to>Cria data_insercao</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filtrar por clientes ativos</from>
+      <to>Remove colunas auditoria</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Remove colunas auditoria</from>
+      <to>Cria nome_completo</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Remover CPF duplicado</from>
+      <to>Tratamento de CPF e Gênero</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filtrar por clientes ativos</from>
+      <to>Tratamento IndCliente nulo</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Tratamento IndCliente nulo</from>
+      <to>Seleciona colunas MKT</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Seleciona colunas MKT</from>
+      <to>1-CHURN_PERFIL</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -577,13 +592,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1632</xloc>
+      <xloc>1792</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Cria mes_ano</name>
+    <name>Cria ano_mes</name>
     <type>ConcatFields</type>
     <description/>
     <distribute>Y</distribute>
@@ -650,7 +665,7 @@
       </field>
     </fields>
     <ConcatFields>
-      <targetFieldName>mes_ano</targetFieldName>
+      <targetFieldName>ano_mes</targetFieldName>
       <targetFieldLength>0</targetFieldLength>
       <removeSelectedFields>Y</removeSelectedFields>
     </ConcatFields>
@@ -663,7 +678,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1432</xloc>
+      <xloc>1056</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -749,7 +764,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1232</xloc>
+      <xloc>1632</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -765,8 +780,8 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <send_true_to/>
-    <send_false_to/>
+    <send_true_to>Remove colunas auditoria</send_true_to>
+    <send_false_to>Tratamento IndCliente nulo</send_false_to>
     <compare>
       <condition>
         <negated>N</negated>
@@ -793,13 +808,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>632</xloc>
+      <xloc>1232</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Nome e sobrenome maiúsculos</name>
+    <name>Nome, sobrenome e UF maiúsculos</name>
     <type>StringOperations</type>
     <description/>
     <distribute>Y</distribute>
@@ -813,7 +828,7 @@
       <field>
         <in_stream_name>nome</in_stream_name>
         <out_stream_name/>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <lower_upper>upper</lower_upper>
         <padding_type>none</padding_type>
         <pad_char/>
@@ -826,7 +841,20 @@
       <field>
         <in_stream_name>sobrenome</in_stream_name>
         <out_stream_name/>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
+        <lower_upper>upper</lower_upper>
+        <padding_type>none</padding_type>
+        <pad_char/>
+        <pad_len/>
+        <init_cap>no</init_cap>
+        <mask_xml>none</mask_xml>
+        <digits>none</digits>
+        <remove_special_characters>none</remove_special_characters>
+      </field>
+      <field>
+        <in_stream_name>uf</in_stream_name>
+        <out_stream_name/>
+        <trim_type>both</trim_type>
         <lower_upper>upper</lower_upper>
         <padding_type>none</padding_type>
         <pad_char/>
@@ -846,7 +874,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1032</xloc>
+      <xloc>880</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1116,7 +1144,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>192</xloc>
+      <xloc>80</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1172,7 +1200,7 @@
       </field>
       <field>
         <column_name>ANO_MES</column_name>
-        <stream_name>mes_ano</stream_name>
+        <stream_name>ano_mes</stream_name>
       </field>
       <field>
         <column_name>DATA_INSERCAO</column_name>
@@ -1188,47 +1216,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1832</xloc>
-      <yloc>96</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Remove colunas</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <select_unspecified>N</select_unspecified>
-      <remove>
-        <name>escolaridade</name>
-      </remove>
-      <remove>
-        <name>estado_civil</name>
-      </remove>
-      <remove>
-        <name>idade</name>
-      </remove>
-      <remove>
-        <name>uf</name>
-      </remove>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>304</xloc>
+      <xloc>1968</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1261,7 +1249,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
+      <xloc>320</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1360,7 +1348,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>832</xloc>
+      <xloc>688</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1394,8 +1382,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>272</yloc>
+      <xloc>320</xloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1532,8 +1520,301 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>632</xloc>
-      <yloc>272</yloc>
+      <xloc>528</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Tratamento IndCliente nulo</name>
+    <type>IfNull</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <replaceAllByValue>0</replaceAllByValue>
+    <replaceAllMask/>
+    <selectFields>Y</selectFields>
+    <selectValuesType>N</selectValuesType>
+    <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      </valuetypes>
+    <fields>
+      <field>
+        <name>indcliente</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1232</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Remove colunas auditoria</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <select_unspecified>N</select_unspecified>
+      <remove>
+        <name>uf</name>
+      </remove>
+      <remove>
+        <name>escolaridade</name>
+      </remove>
+      <remove>
+        <name>idade</name>
+      </remove>
+      <remove>
+        <name>estado_civil</name>
+      </remove>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1456</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>1-CHURN_PERFIL</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <separator>;</separator>
+    <enclosure>"</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>C:/Users/Carlo/Documents/Projetos/PUC Minas - Projeto Churn/Destino/1-CHURN_PERFIL</name>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>csv</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery/>
+    </file>
+    <fields>
+      <field>
+        <name>ID</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>genero</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>estado_civil</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>idade</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>uf</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>escolaridade</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>indcliente</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>anoMes</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1632</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Seleciona colunas MKT</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>ID</name>
+        <rename/>
+      </field>
+      <field>
+        <name>idgenero</name>
+        <rename>genero</rename>
+      </field>
+      <field>
+        <name>estado_civil</name>
+        <rename/>
+      </field>
+      <field>
+        <name>idade</name>
+        <rename/>
+      </field>
+      <field>
+        <name>uf</name>
+        <rename/>
+      </field>
+      <field>
+        <name>escolaridade</name>
+        <rename/>
+      </field>
+      <field>
+        <name>indcliente</name>
+        <rename/>
+      </field>
+      <field>
+        <name>ano_mes</name>
+        <rename>anoMes</rename>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1440</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
